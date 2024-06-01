@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: DemoKafkaStream
+
+  cloud:
+    function:
+      definition: producer1;consumer1;producer2;consumer2
+    stream:
+      bindings:
+        producer1-out-0:
+          binder: kafka-1
+          destination: kafka_1_topic
+        consumer1-in-0:
+          binder: kafka-1
+          destination: kafka_1_topic
+
+        producer2-out-0:
+          binder: kafka-2
+          destination: kafka_2_topic
+        consumer2-in-0:
+          binder: kafka-2
+          destination: kafka_2_topic
+
+      binders:
+        kafka-1:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers:
+                        - 192.168.10.101:29092
+        kafka-2:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers:
+                        - 192.168.10.101:39092
+
