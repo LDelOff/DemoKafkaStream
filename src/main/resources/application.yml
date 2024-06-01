@@ -4,22 +4,36 @@ spring:
 
   cloud:
     function:
-      definition: producer1;consumer1;producer2;consumer2
+      definition: producerAuto1;consumerAuto1;producerManual1;consumerManual1;producerAuto2;consumerAuto2;producerManual2;consumerManual2
     stream:
       bindings:
-        producer1-out-0:
+        producerAuto1-out-0:
           binder: kafka-1
-          destination: kafka_1_topic
-        consumer1-in-0:
+          destination: kafka_1_topic_auto
+        consumerAuto1-in-0:
           binder: kafka-1
-          destination: kafka_1_topic
+          destination: kafka_1_topic_auto
 
-        producer2-out-0:
+        producerManual1-out-0:
+          binder: kafka-1
+          destination: kafka_1_topic_manual
+        consumerManual1-in-0:
+          binder: kafka-1
+          destination: kafka_1_topic_manual
+
+        producerAuto2-out-0:
           binder: kafka-2
-          destination: kafka_2_topic
-        consumer2-in-0:
+          destination: kafka_2_topic_auto
+        consumerAuto2-in-0:
           binder: kafka-2
-          destination: kafka_2_topic
+          destination: kafka_2_topic_auto
+
+        producerManual2-out-0:
+          binder: kafka-2
+          destination: kafka_2_topic_manual
+        consumerManual2-in-0:
+          binder: kafka-2
+          destination: kafka_2_topic_manual
 
       binders:
         kafka-1:
@@ -32,6 +46,7 @@ spring:
                     binder:
                       brokers:
                         - 192.168.10.101:29092
+
         kafka-2:
           type: kafka
           environment:
@@ -42,4 +57,3 @@ spring:
                     binder:
                       brokers:
                         - 192.168.10.101:39092
-
