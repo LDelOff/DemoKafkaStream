@@ -32,7 +32,7 @@ public class DemoKafkaStreamApplication {
     // Консьюмер
     @Bean
     public Consumer<Model> consumerAuto1() {
-        return message -> {;
+        return message -> {
     //        System.out.println("Consume auto 1: " + message);
         };
     }
