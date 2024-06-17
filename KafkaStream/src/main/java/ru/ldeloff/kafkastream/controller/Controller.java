@@ -15,6 +15,7 @@ public class Controller {
     private final KafkaProducerConfig kafkaProducerConfig;
     private final BindingsEndpoint bindingsEndpoint;
 
+    // Ручная отправка сообщений
     @GetMapping(value = "/test1")
     public String test1() {
         kafkaProducerConfig.sendMessage1(new Model(++i));
@@ -27,6 +28,7 @@ public class Controller {
         return "test OK, i = " + i;
     }
 
+    // Переключатели состояний consumerAutoTestCircuitBreaker1-in-0
     @GetMapping(value = "/test3")
     public String test3() {
         bindingsEndpoint.changeState("consumerAutoTestCircuitBreaker1-in-0", BindingsLifecycleController.State.STOPPED);

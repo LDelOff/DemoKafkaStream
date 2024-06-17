@@ -8,20 +8,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CircuitBreakerImpl {
-    private final CircuitBreaker circuitBreaker;
     private final BindingsEndpoint bindingsEndpoint;
 
     protected CircuitBreakerImpl(BindingsEndpoint bindingsEndpoint,
                                  CircuitBreakerConfig circuitBreakerConfig) {
         this.bindingsEndpoint = bindingsEndpoint;
-        this.circuitBreaker = circuitBreakerConfig.circuitBreaker("consumerCircuitBreaker");
-
+        CircuitBreaker circuitBreaker = circuitBreakerConfig.circuitBreaker("consumerCircuitBreaker");
         circuitBreaker.getEventPublisher().onStateTransition(this::onStateChangeEvent);
     }
 
     private void onStateChangeEvent(CircuitBreakerOnStateTransitionEvent event) {
-        System.out.println("WARNING");
-
         switch (event.getStateTransition().getToState()) {
             case OPEN:
                 System.out.println("consumerAutoTestCircuitBreaker1 open");

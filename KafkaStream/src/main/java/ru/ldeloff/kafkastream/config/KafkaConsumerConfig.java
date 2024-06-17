@@ -36,7 +36,6 @@ public class KafkaConsumerConfig {
             } catch (Exception e) {
                 System.out.println(e.getClass());
             }
-
         };
     }
 
