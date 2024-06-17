@@ -1,4 +1,4 @@
-package ru.ldeloff.demokafkastream;
+package ru.ldeloff.server.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

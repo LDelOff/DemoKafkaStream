@@ -1,0 +1,118 @@
+spring:
+  application:
+    name: DemoKafkaStream
+  main:
+    allow-bean-definition-overriding: true
+
+  cloud:
+    function:
+      definition: producerAuto1;consumerAuto1;producerManual1;consumerManual1;producerAuto2;consumerAuto2;producerManual2;consumerManual2;producerAutoTestCircuitBreaker1;consumerAutoTestCircuitBreaker1
+    stream:
+      bindings:
+        producerAuto1-out-0:
+          binder: kafka-1
+          destination: kafka_1_topic_auto
+        consumerAuto1-in-0:
+          binder: kafka-1
+          destination: kafka_1_topic_auto
+
+        producerManual1-out-0:
+          binder: kafka-1
+          destination: kafka_1_topic_manual
+        consumerManual1-in-0:
+          binder: kafka-1
+          destination: kafka_1_topic_manual
+
+        producerAutoTestCircuitBreaker1-out-0:
+          binder: kafka-1
+          destination: kafka_1_topic_auto_CB
+        consumerAutoTestCircuitBreaker1-in-0:
+          binder: kafka-1
+          destination: kafka_1_topic_auto_CB
+          group: consumerAutoTestCircuitBreaker
+
+        producerAuto2-out-0:
+          binder: kafka-2
+          destination: kafka_2_topic_auto
+        consumerAuto2-in-0:
+          binder: kafka-2
+          destination: kafka_2_topic_auto
+
+        producerManual2-out-0:
+          binder: kafka-2
+          destination: kafka_2_topic_manual
+        consumerManual2-in-0:
+          binder: kafka-2
+          destination: kafka_2_topic_manual
+
+      binders:
+        kafka-1:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      producer-properties:
+                        key.serializer: "org.apache.kafka.common.serialization.StringSerializer"
+                      brokers:
+                        - 192.168.10.101:29092
+
+        kafka-2:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers:
+                        - 192.168.10.101:39092
+
+#Resilience4j circuit breaker config
+resilience4j.circuitbreaker:
+  instances:
+    consumerCircuitBreaker:
+      slidingWindowType: COUNT_BASED
+      minimumNumberOfCalls: 1
+      permittedNumberOfCallsInHalfOpenState: 10
+      failureRateThreshold: 50
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      slidingWindowSize: 10
+      waitDurationInOpenState: 10s
+      registerHealthIndicator: true
+      recordExceptions: org.springframework.web.reactive.function.client.WebClientRequestException
+      ignoreExceptions:
+
+#Resilience4j retry config
+resilience4j.retry:
+  instances:
+    consumerCircuitBreaker:
+      maxAttempts: 3
+      waitDuration: 500
+      retryExceptions: org.springframework.web.reactive.function.client.WebClientRequestException
+      ignoreExceptions:
+  metrics:
+    enabled: true
+    legacy:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bindings,health
+
+  health:
+    binders:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+    ratelimiters:
+      enabled:true
+
+  endpoint:
+    health:
+      show-details: ALWAYS
+
