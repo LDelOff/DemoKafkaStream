@@ -1,0 +1,1 @@
+Пример проекта с kafka streams и паттерном circuit breaker
